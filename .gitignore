@@ -23,5 +23,5 @@ Thumbs.db
 *.tmp
 
 # Database files
-database/inventory.db*
+/database/inventory.db*
 
