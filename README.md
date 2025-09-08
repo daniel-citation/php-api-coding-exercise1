@@ -19,15 +19,34 @@ If the `database/inventory.db` file already exists, you can reset it by deleting
 
 ## Run
 
+### Option 1: Using Docker (Recommended)
+
+The easiest way to run this project is using Docker with Apache:
+
+```bash
+# Build and run with docker-compose
+docker-compose up --build
+
+# Or build and run manually
+docker build -t inventory-api .
+docker run -p 8080:80 -v $(pwd)/database:/var/www/html/database inventory-api
+```
+
+The API will be available at `http://localhost:8080`
+
+### Option 2: Using PHP Built-in Server
+
 From the project root directory:
 
 ```bash
 php -S localhost:8000 index.php
 ```
 
+The API will be available at `http://localhost:8000`
+
 ## Endpoints
 
-Base URL: `http://localhost:8000`
+Base URL: `http://localhost:8000` (PHP built-in server) or `http://localhost:8080` (Docker)
 
 ### GET /api/products
 Return all products.

@@ -1,0 +1,34 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# Docker files (don't include in build context)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Test files
+test_concurrency.sh
+inventory-api/test_concurrency.sh
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log

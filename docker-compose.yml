@@ -1,0 +1,27 @@
+
+services:
+  inventory-api:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      # Mount database directory to persist data
+      - ./database_new:/var/www/html/database
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+    restart: unless-stopped
+    container_name: inventory-api
+
+  test-runner:
+    image: alpine:latest
+    depends_on:
+      - inventory-api
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - DOCKER_CONTAINER=true
+    profiles:
+      - testing
+    command: ["/bin/sh", "-c", "apk add --no-cache curl jq bash && chmod +x test_concurrency_docker.sh && ./test_concurrency_docker.sh"]
