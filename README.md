@@ -119,7 +119,7 @@ A test script is provided to demonstrate potential race conditions:
 make test
 
 # Or run directly
-./test_concurrency_docker.sh
+./test_concurrency.sh
 ```
 
 This script sends concurrent reservation requests to test the atomicity of stock operations. Run it multiple times to observe behaviour under concurrent load.

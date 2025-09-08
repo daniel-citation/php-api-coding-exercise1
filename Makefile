@@ -29,7 +29,7 @@ db:
 .PHONY: test
 test:
 	@echo "Running concurrency test..."
-	@./test_concurrency_docker.sh
+	@./test_concurrency.sh
 
 .PHONY: run
 run:
