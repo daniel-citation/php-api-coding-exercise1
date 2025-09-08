@@ -9,57 +9,61 @@ This API handles product inventory. Please review for production readiness, focu
 ## Setup
 
 1. Install dependencies (none required beyond PHP extensions bundled by default).
-2. Initialise the SQLite database:
+2. Start the application and create the SQLite database:
 
 ```bash
-sqlite3 database/inventory.db < database/schema.sql
+# Start the application
+docker compose up
+
+# Create the database (in another terminal)
+make db-create
 ```
 
-If the `database/inventory.db` file already exists, you can reset it by deleting and re-running the command above.
+If the `database/inventory.db` file already exists, you can reset it with:
+
+```bash
+make db-reset
+```
+
+You can also run SQLite commands directly in the container:
+
+```bash
+make run RUN="sqlite3 database/inventory.db \"SELECT * FROM products;\""
+```
 
 ## Run
 
 ### Option 1: Using Docker (Recommended)
 
-The easiest way to run this project is using Docker with Apache:
+The easiest way to run this project is using Docker with Apache. The project directory is mounted into the container for development:
 
 ```bash
-# Build and run with docker-compose
-docker-compose up --build
+# Start the application
+docker compose up
 
 # Or build and run manually
 docker build -t inventory-api .
-docker run -p 8080:80 -v $(pwd)/database:/var/www/html/database inventory-api
+docker run -p 8080:80 -v $(pwd):/var/www/html inventory-api
 ```
 
 The API will be available at `http://localhost:8080`
 
-### Option 2: Using PHP Built-in Server
-
-From the project root directory:
-
-```bash
-php -S localhost:8000 index.php
-```
-
-The API will be available at `http://localhost:8000`
-
 ## Endpoints
 
-Base URL: `http://localhost:8000` (PHP built-in server) or `http://localhost:8080` (Docker)
+Base URL: `http://localhost:8080`
 
 ### GET /api/products
 Return all products.
 
 ```bash
-curl -s http://localhost:8000/api/products | jq
+curl -s http://localhost:8080/api/products | jq
 ```
 
 ### GET /api/products/{id}
 Return a single product by id.
 
 ```bash
-curl -s http://localhost:8000/api/products/1 | jq
+curl -s http://localhost:8080/api/products/1 | jq
 ```
 
 ### POST /api/products
@@ -68,7 +72,7 @@ Create a product.
 Body fields: `name` (string, required), `price` (number, optional), `stock_quantity` (integer, optional)
 
 ```bash
-curl -s -X POST http://localhost:8000/api/products \
+curl -s -X POST http://localhost:8080/api/products \
   -H 'Content-Type: application/json' \
   -d '{"name":"New Widget","price":12.50,"stock_quantity":30}' | jq
 ```
@@ -77,7 +81,7 @@ curl -s -X POST http://localhost:8000/api/products \
 Update any subset of fields.
 
 ```bash
-curl -s -X PUT http://localhost:8000/api/products/1 \
+curl -s -X PUT http://localhost:8080/api/products/1 \
   -H 'Content-Type: application/json' \
   -d '{"price":15.00,"stock_quantity":120}' | jq
 ```
@@ -85,7 +89,7 @@ curl -s -X PUT http://localhost:8000/api/products/1 \
 Alternatively, you may use method override:
 
 ```bash
-curl -s -X POST http://localhost:8000/api/products/1 \
+curl -s -X POST http://localhost:8080/api/products/1 \
   -H 'X-HTTP-Method-Override: PUT' \
   -H 'Content-Type: application/json' \
   -d '{"name":"Updated Name"}' | jq
@@ -97,7 +101,7 @@ Reserve quantity from stock.
 Body: `{ "quantity": n }`
 
 ```bash
-curl -s -X POST http://localhost:8000/api/products/1/reserve \
+curl -s -X POST http://localhost:8080/api/products/1/reserve \
   -H 'Content-Type: application/json' \
   -d '{"quantity":5}' | jq
 ```
@@ -106,7 +110,7 @@ curl -s -X POST http://localhost:8000/api/products/1/reserve \
 Soft delete a product.
 
 ```bash
-curl -s -X DELETE http://localhost:8000/api/products/1 | jq
+curl -s -X DELETE http://localhost:8080/api/products/1 | jq
 ```
 
 ## Testing
@@ -115,10 +119,25 @@ curl -s -X DELETE http://localhost:8000/api/products/1 | jq
 A test script is provided to demonstrate potential race conditions:
 
 ```bash
-./test_concurrency.sh
+# Using Makefile (recommended)
+make test
+
+# Or run directly
+./test_concurrency_docker.sh
 ```
 
 This script sends concurrent reservation requests to test the atomicity of stock operations. Run it multiple times to observe behaviour under concurrent load.
+
+## Available Make Targets
+
+The project includes a Makefile with the following targets:
+
+- `make help` - Show available targets
+- `make db-create` - Create the SQLite database (in container)
+- `make db-reset` - Reset the database (delete and recreate)
+- `make db-clean` - Remove the database file
+- `make test` - Run the concurrency test
+- `make run` - Run a command in the container (e.g., `make run RUN="sqlite3 database/inventory.db \"SELECT * FROM products;\""`)
 
 ## Notes
 - This is a compact API intended for technical review. Assess design, correctness, and production readiness, including concurrency behaviour and error handling.

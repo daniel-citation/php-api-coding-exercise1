@@ -16,18 +16,7 @@ COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
-COPY . /var/www/html/
-
-# Create database directory and set permissions
-RUN mkdir -p /var/www/html/database && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html
-
-# Initialize the database
-RUN sqlite3 /var/www/html/database/inventory.db < /var/www/html/database/schema.sql && \
-    chown www-data:www-data /var/www/html/database/inventory.db && \
-    chmod 664 /var/www/html/database/inventory.db
+# Note: Application files will be mounted via docker compose
 
 # Expose port 80
 EXPOSE 80

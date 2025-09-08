@@ -18,7 +18,9 @@ fi
 # Check if server is running
 if ! curl -s $API_URL/api/products/1 >/dev/null 2>&1; then
     echo "Error: API server not running. Start it with:"
-    echo "  docker-compose up"
+    echo "  make docker-up"
+    echo "  or"
+    echo "  docker compose up"
     exit 1
 fi
 

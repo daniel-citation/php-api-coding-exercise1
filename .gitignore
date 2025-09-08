@@ -21,3 +21,7 @@ Thumbs.db
 *~
 *.bak
 *.tmp
+
+# Database files
+database/inventory.db*
+
