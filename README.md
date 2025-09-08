@@ -16,14 +16,10 @@ This API handles product inventory. Please review for production readiness, focu
 docker compose up
 
 # Create the database (in another terminal)
-make db-create
+make db
 ```
 
-If the `database/inventory.db` file already exists, you can reset it with:
-
-```bash
-make db-reset
-```
+The database will be reset each time you run `make db`.
 
 You can also run SQLite commands directly in the container:
 
@@ -133,9 +129,7 @@ This script sends concurrent reservation requests to test the atomicity of stock
 The project includes a Makefile with the following targets:
 
 - `make help` - Show available targets
-- `make db-create` - Create the SQLite database (in container)
-- `make db-reset` - Reset the database (delete and recreate)
-- `make db-clean` - Remove the database file
+- `make db` - Create the SQLite database (in container, always resets existing database)
 - `make test` - Run the concurrency test
 - `make run` - Run a command in the container (e.g., `make run RUN="sqlite3 database/inventory.db \"SELECT * FROM products;\""`)
 
