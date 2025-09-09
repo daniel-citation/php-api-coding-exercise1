@@ -13,11 +13,13 @@ This API handles product inventory. Please review for production readiness, focu
 
 ```bash
 # Start the application
-docker compose up
+docker compose up -d
 
-# Create the database (in another terminal)
+# Create the database
 make db
 ```
+
+**Note:** The database must be created after starting the container for the API to work properly.
 
 The database will be reset each time you run `make db`.
 
@@ -26,19 +28,6 @@ You can also run SQLite commands directly in the container:
 ```bash
 make run RUN="sqlite3 database/inventory.db \"SELECT * FROM products;\""
 ```
-
-## Run
-
-### Using Docker
-
-The project directory is mounted into the container for development:
-
-```bash
-# Start the application
-docker compose up -d
-```
-
-The API will be available at `http://localhost:8080`
 
 ## Endpoints
 
