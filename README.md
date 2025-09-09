@@ -29,17 +29,13 @@ make run RUN="sqlite3 database/inventory.db \"SELECT * FROM products;\""
 
 ## Run
 
-### Option 1: Using Docker (Recommended)
+### Using Docker
 
-The easiest way to run this project is using Docker with Apache. The project directory is mounted into the container for development:
+The project directory is mounted into the container for development:
 
 ```bash
 # Start the application
-docker compose up
-
-# Or build and run manually
-docker build -t inventory-api .
-docker run -p 8080:80 -v $(pwd):/var/www/html inventory-api
+docker compose up -d
 ```
 
 The API will be available at `http://localhost:8080`
@@ -135,3 +131,4 @@ The project includes a Makefile with the following targets:
 
 ## Notes
 - This is a compact API intended for technical review. Assess design, correctness, and production readiness, including concurrency behaviour and error handling.
+
